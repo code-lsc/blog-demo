@@ -1,6 +1,6 @@
 ## blog-demo
 
-##一个springboot的博客demo
+##一个springboot简单的博客demo
 
 ##使用技术
 
