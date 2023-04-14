@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.blog.dao.UserDao">
+    <update id="updateUserStatu">
+      update t_user set statu=#{statu} where id=#{uid} and activate_code=#{code} and statu=0
+    </update>
+</mapper>

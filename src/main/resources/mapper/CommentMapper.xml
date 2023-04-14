@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.blog.dao.CommentDao">
+
+    <resultMap id="commentVoResultMap" type="com.qf.blog.vo.CommentVo">
+        <association property="commentEntity">
+            <id column="cid" property="id"></id>
+            <result column="uid" property="uid"></result>
+            <result column="entity_Type" property="entityType"></result>
+            <result column="entity_Id" property="entityId"></result>
+            <result column="target_Id" property="targetId"></result>
+            <result column="statu" property="statu"></result>
+            <result column="create_Time" property="createTime"></result>
+            <result column="content" property="content"></result>
+            <result column="targetName" property="targetName"></result>
+        </association>
+        <association property="user">
+            <id column="userId" property="id"/>
+            <result column="username" property="username"/>
+            <result column="head_Url" property="headUrl"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="reply" type="com.qf.blog.vo.ReplyVo">
+        <id column="id" property="id"/>
+        <result column="username" property="userName"/>
+        <result column="head_url" property="headUrl"/>
+        <result column="create_time" property="createTime"/>
+        <result column="uid" property="uid"/>
+        <result column="content" property="content"/>
+    </resultMap>
+
+    <select id="selectCommentListTid" resultMap="commentVoResultMap">
+        SELECT
+            c.*,u.*,u.id AS userId,c.id AS cid,tu.username AS targetName
+        FROM t_comment AS c
+                 LEFT JOIN t_user AS u ON u.id = c.uid
+                 LEFT JOIN t_user AS tu ON tu.id = c.target_id
+        WHERE c.entity_type = #{type} AND c.entity_id = #{tid}
+        ORDER BY c.create_time DESC
+    </select>
+    <select id="getCommentCountByTopicId" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM t_comment
+        WHERE entity_id = #{id}  AND entity_type= #{type}
+    </select>
+
+    <select id="selectReplyById" resultMap="reply">
+        SELECT c.*,
+               u.username,
+               u.head_url
+        FROM t_comment AS c
+                 LEFT JOIN t_user AS u ON c.uid = u.id
+        WHERE c.target_id= #{id} AND c.uid != #{id}
+    </select>
+</mapper>

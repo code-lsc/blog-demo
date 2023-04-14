@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.blog.dao.MessageDao">
+    <resultMap id="message" type="com.qf.blog.vo.MessageVo">
+        <id column="id" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="head_url" property="headUrl"/>
+        <result column="title" property="invitationName"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="uid" property="uid"/>
+        <result column="entity_id" property="entityId"/>
+    </resultMap>
+
+<select id="selectMessageByUserId" resultMap="message">
+    SELECT m.*,
+           u.username AS userName,
+           u.head_url,
+           tv.title
+    FROM t_message AS m
+             LEFT JOIN t_user AS u ON u.id=m.uid
+             LEFT JOIN t_invitation AS tv ON tv.id = m.entity_id
+    WHERE target_id = #{id}
+    ORDER BY m.create_time DESC
+</select>
+    <select id="selectNoReadCountById" resultType="integer">
+        SELECT COUNT(1) FROM t_message WHERE  status=0 AND target_id = #{id}
+    </select>
+
+
+</mapper>
